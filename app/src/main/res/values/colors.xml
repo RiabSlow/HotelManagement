@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ededed</color>
+    <color name="colorPrimaryDark">#ef98999b</color>
+    <color name="colorAccent">#58aae7</color>
+    <color name="colorPrimaryText">#fff</color>
+    <color name="foodNameBack">#66000000</color>
+    <color name="white">#ffffff</color>
+    <color name="red">#ffc8c9</color>
+    <color name="trans_red">#8eff0000</color>
+</resources>

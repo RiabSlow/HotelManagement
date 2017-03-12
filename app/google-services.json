@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "199137684629",
+    "firebase_url": "https://myfirstapp-a8988.firebaseio.com",
+    "project_id": "myfirstapp-a8988",
+    "storage_bucket": "myfirstapp-a8988.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199137684629:android:7f6905ac25fab270",
+        "android_client_info": {
+          "package_name": "com.team.speedcoders.hotelmanagement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "199137684629-37h2i7o3ja1htcevob08t1teh87i76c1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.team.speedcoders.hotelmanagement",
+            "certificate_hash": "d6b3fe0d203624b00d2fd2e9b473801f93aad0aa"
+          }
+        },
+        {
+          "client_id": "199137684629-jfdsir6mqo2dkfspul7qsak3rud5ij37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZCpEwEqZZENOTSFd5izX1QpmMgwN4jHU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "199137684629-jfdsir6mqo2dkfspul7qsak3rud5ij37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

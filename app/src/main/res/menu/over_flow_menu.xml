@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item android:id="@+id/logout"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_power_settings_new_black_24dp"
+            android:title="@string/log_out"
+            android:orderInCategory="100"
+            />
+        <item android:actionLayout="@layout/activity_items_list"
+            app:showAsAction="ifRoom"
+            android:id="@+id/order"
+            android:title="@string/order_now"
+            android:orderInCategory="101"
+            android:icon="@drawable/buypng"
+            />
+    </group>
+</menu>
