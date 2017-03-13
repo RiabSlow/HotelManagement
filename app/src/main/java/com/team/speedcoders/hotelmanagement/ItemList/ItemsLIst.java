@@ -3,6 +3,7 @@ package com.team.speedcoders.hotelmanagement.ItemList;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.team.speedcoders.hotelmanagement.LogInActivity.LoginActivity;
@@ -28,7 +30,8 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
     FirebaseDatabase database;
     DatabaseReference reference;
     String name, hotelName;
-
+    FirebaseAuth auth;
+    FirebaseAuth.AuthStateListener stateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +40,29 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("Items");
-        name = getSharedPreferences(LoginActivity.MySharedPreference, Context.MODE_PRIVATE).getString(LoginActivity.UserName, "");
-        hotelName = getSharedPreferences(LoginActivity.MySharedPreference, Context.MODE_PRIVATE).getString(LoginActivity.HotelName, "");
+
         foods = new Foods();
         recyclerView = ((RecyclerView) findViewById(R.id.recycler_view));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapte = new ItemListRecyclerViewAdapte(foods, this);
         recyclerViewAdapte.setListener(this);
         recyclerView.setAdapter(recyclerViewAdapte);
+
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("/" + hotelName + "/orders/" + name);
+        reference = database.getReference("/orders/table");
+
+        auth=FirebaseAuth.getInstance();
+        stateListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser()==null) {
+                    finish();
+                    Toast.makeText(ItemsLIst.this, "Successfully logged out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        auth.addAuthStateListener(stateListener);
     }
 
     @Override
@@ -107,9 +123,7 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
                 dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getSharedPreferences(LoginActivity.MySharedPreference, Context.MODE_PRIVATE).edit().clear().apply();
-                        Toast.makeText(ItemsLIst.this, "Successfully logged out", Toast.LENGTH_SHORT).show();
-                        finish();
+                        auth.signOut();
                     }
                 }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
                     @Override
@@ -119,6 +133,12 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        auth.removeAuthStateListener(stateListener);
     }
 
     @Override

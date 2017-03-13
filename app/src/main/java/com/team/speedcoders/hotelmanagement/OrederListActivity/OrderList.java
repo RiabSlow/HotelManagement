@@ -3,6 +3,7 @@ package com.team.speedcoders.hotelmanagement.OrederListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +37,8 @@ public class OrderList extends AppCompatActivity {
     DialogFragment dialogFragment;
     ArrayList<Orders> items = new ArrayList<>();
     ChildEventListener childEventListener;
+    FirebaseAuth auth;
+    FirebaseAuth.AuthStateListener stateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,7 @@ public class OrderList extends AppCompatActivity {
         setSupportActionBar((Toolbar) findViewById(R.id.orderToolbar));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("Orders");
-        hotelName = getSharedPreferences(LoginActivity.MySharedPreference, Context.MODE_PRIVATE).getString(LoginActivity.HotelName, "");
+
         recyclerView = ((RecyclerView) findViewById(R.id.orderRecyclerView));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewAdapter = new RecyclerViewAdapter(OrderList.this, items);
@@ -88,6 +92,20 @@ public class OrderList extends AppCompatActivity {
         };
 
         reference.addChildEventListener(childEventListener);
+
+
+        auth = FirebaseAuth.getInstance();
+        stateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    finish();
+                    Toast.makeText(OrderList.this, "Successfully logged out", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        auth.addAuthStateListener(stateListener);
     }
 
 
@@ -128,13 +146,11 @@ public class OrderList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle("Click confirm to logout");
-        dialog.setCancelable(false);
+        //dialog.setCancelable(true);
         dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getSharedPreferences(LoginActivity.MySharedPreference, Context.MODE_PRIVATE).edit().clear().apply();
-                Toast.makeText(OrderList.this, "Successfully logged out", Toast.LENGTH_SHORT).show();
-                finish();
+                auth.signOut();
             }
         }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
             @Override
@@ -154,6 +170,7 @@ public class OrderList extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        auth.removeAuthStateListener(stateListener);
         reference.removeEventListener(childEventListener);
     }
 }

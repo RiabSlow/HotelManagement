@@ -6,7 +6,7 @@
     <string name="hotel_name">Hotel Name</string>
     <string name="user_id">Email/User Id</string>
     <string name="password">Password</string>
-    <string name="as_author">As Author</string>
+    <string name="as_author">As Manager</string>
     <string name="log_in">Log In</string>
     <string name="log_out">Log Out</string>
     <string name="register_now">Not a member?</string>

@@ -1,19 +1,20 @@
 package com.team.speedcoders.hotelmanagement.LogInActivity;
 
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.team.speedcoders.hotelmanagement.ItemList.ItemsLIst;
@@ -24,14 +25,8 @@ import com.team.speedcoders.hotelmanagement.RegisterActivity.RegisterActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public final static String MySharedPreference = "mypreference";
-    public final static String HotelName = "hotelname";
-    public final static String UserName = "username";
-    public final static String Password = "password";
-    public final static String AsAuthor = "author";
-    SharedPreferences sharedPreferences;
-
-    EditText hotelName, userName, password;
+    EditText userName, password;
+    String userNames, passwords;
     Button login;
     CheckBox checkBox;
     TextView registerNow;
@@ -43,19 +38,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initiateAll();
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sharedPreferences = getSharedPreferences(MySharedPreference, Context.MODE_PRIVATE);
-        firebaseAuth=FirebaseAuth.getInstance();
-        authStateListener=new FirebaseAuth.AuthStateListener() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading", "");
+
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user=firebaseAuth.getCurrentUser();
-                if(user!=null)
-                    nextActivity(sharedPreferences.getBoolean(AsAuthor, false));
-
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    progressDialog.dismiss();
+                    nextActivity(checkBox.isChecked());
+                } else progressDialog.dismiss();
             }
         };
-
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
@@ -66,18 +62,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (sharedPreferences.contains(HotelName)) {
-            if (sharedPreferences.contains(UserName)) {
-                if (sharedPreferences.contains(Password)) {
-                    nextActivity(sharedPreferences.getBoolean(AsAuthor, false));
-                }
-            }
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (authStateListener != null)
+            firebaseAuth.removeAuthStateListener(authStateListener);
     }
 
     @Override
@@ -88,7 +79,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void initiateAll() {
-        hotelName = (EditText) findViewById(R.id.hotelNameField);
         userName = (EditText) findViewById(R.id.userIdField);
         password = (EditText) findViewById(R.id.userPWField);
         checkBox = (CheckBox) findViewById(R.id.author);
@@ -100,11 +90,26 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.login:
-                        if (checkConstrains())
-                            nextActivity(checkBox.isChecked());
+                        final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading please wait", "");
+                        if (checkConstrains()) {
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+                            firebaseAuth.signInWithEmailAndPassword(userNames, passwords).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        progressDialog.dismiss();
+                                        nextActivity(checkBox.isChecked());
+                                    } else {
+                                        progressDialog.dismiss();
+                                        Toast.makeText(LoginActivity.this, "Error loging in", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } else progressDialog.dismiss();
                         break;
                     case R.id.registerNow:
-                        Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                         startActivity(intent);
                         break;
                 }
@@ -124,27 +129,22 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private boolean checkConstrains() {
-        String hotelName = this.hotelName.getText().toString();
-        String userName = this.userName.getText().toString();
-        String password = this.password.getText().toString();
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
-        if (!hotelName.isEmpty()) {
-            if (userName.length() >= 4) {
-                if (password.length() >= 8) {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(HotelName, hotelName);
-                    editor.putString(UserName, userName);
-                    editor.putString(Password, password);
-                    editor.putBoolean(AsAuthor, checkBox.isChecked());
-                    editor.apply();
-                    return true;
-                } else
-                    Toast.makeText(this, "Password must have 8 character", Toast.LENGTH_SHORT).show();
+    private boolean checkConstrains() {
+        userNames = this.userName.getText().toString();
+        passwords = this.password.getText().toString();
+
+        if (userNames.length() >= 4) {
+            if (passwords.length() >= 8) {
+                return true;
             } else
-                Toast.makeText(this, "User name must Contain atleast 4 character", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Password must have 8 character", Toast.LENGTH_SHORT).show();
         } else
-            Toast.makeText(this, "Hotel name must be filled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User name must Contain atleast 4 character", Toast.LENGTH_SHORT).show();
         return false;
     }
 }
