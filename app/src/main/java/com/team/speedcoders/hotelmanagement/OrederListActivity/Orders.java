@@ -9,8 +9,9 @@ import java.util.ArrayList;
  */
 
 public class Orders {
-    String orderGenerator;
-    ArrayList<OrderedItem> orderedItemArrayList;
+    private boolean accepted=false;
+    private String orderGenerator;
+    private ArrayList<OrderedItem> orderedItemArrayList;
 
     public Orders(String orderGenerator, ArrayList<OrderedItem> orderedItemArrayList) {
         this.orderGenerator = orderGenerator;
@@ -27,5 +28,13 @@ public class Orders {
 
     public ArrayList<OrderedItem> getOrderedItemArrayList() {
         return orderedItemArrayList;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
     }
 }

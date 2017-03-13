@@ -24,7 +24,7 @@ import com.team.speedcoders.hotelmanagement.R;
 
 import java.util.ArrayList;
 
-public class OrderList extends AppCompatActivity {
+public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.ClickInterFace {
 
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
@@ -49,6 +49,7 @@ public class OrderList extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         items= new ArrayList<>();
         recyclerViewAdapter = new RecyclerViewAdapter(OrderList.this, items);
+        recyclerViewAdapter.setClickInterFace(this);
         recyclerView.setAdapter(recyclerViewAdapter);
 
 
@@ -145,5 +146,17 @@ public class OrderList extends AppCompatActivity {
         super.onDestroy();
         auth.removeAuthStateListener(stateListener);
         reference.removeEventListener(childEventListener);
+    }
+
+    @Override
+    public void onServed(int n) {
+        items.remove(n);
+        recyclerViewAdapter.notifyItemRemoved(n);
+    }
+
+    @Override
+    public void onAcceped(int n) {
+        items.get(n).setAccepted(true);
+        recyclerViewAdapter.notifyItemChanged(n);
     }
 }
