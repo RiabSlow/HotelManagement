@@ -1,6 +1,5 @@
 package com.team.speedcoders.hotelmanagement.OrederListActivity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,9 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 import com.team.speedcoders.hotelmanagement.ItemList.OrderedItem;
-import com.team.speedcoders.hotelmanagement.LogInActivity.LoginActivity;
 import com.team.speedcoders.hotelmanagement.R;
 
 import java.util.ArrayList;
@@ -33,9 +30,7 @@ public class OrderList extends AppCompatActivity {
     RecyclerViewAdapter recyclerViewAdapter;
     FirebaseDatabase database;
     DatabaseReference reference;
-    String hotelName;
-    DialogFragment dialogFragment;
-    ArrayList<Orders> items = new ArrayList<>();
+    ArrayList<Orders> items ;
     ChildEventListener childEventListener;
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener stateListener;
@@ -44,28 +39,28 @@ public class OrderList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_list);
+        if(savedInstanceState!=null)
+            return;
         setSupportActionBar((Toolbar) findViewById(R.id.orderToolbar));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("Orders");
 
         recyclerView = ((RecyclerView) findViewById(R.id.orderRecyclerView));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        items= new ArrayList<>();
         recyclerViewAdapter = new RecyclerViewAdapter(OrderList.this, items);
         recyclerView.setAdapter(recyclerViewAdapter);
 
 
         database = FirebaseDatabase.getInstance();
-        reference = database.getReference("/" + hotelName + "/orders");
-        dialogFragment = new DialogFragment();
-        dialogFragment.show(getSupportFragmentManager(), "loading");
+        reference = database.getReference("/orders");
 
 
         childEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ArrayList<OrderedItem> oder = new ArrayList<>();
-                GenericTypeIndicator<ArrayList<OrderedItem>> t = new GenericTypeIndicator<ArrayList<OrderedItem>>() {
-                };
+                GenericTypeIndicator<ArrayList<OrderedItem>> t = new GenericTypeIndicator<ArrayList<OrderedItem>>() {};
                 oder.addAll(dataSnapshot.getValue(t));
                 dataSnapshot.getRef().removeValue();
                 String key = dataSnapshot.getKey();
@@ -112,28 +107,6 @@ public class OrderList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    ArrayList<OrderedItem> oder = new ArrayList<>();
-                    GenericTypeIndicator<ArrayList<OrderedItem>> t = new GenericTypeIndicator<ArrayList<OrderedItem>>() {
-                    };
-                    oder.addAll(ds.getValue(t));
-                    ds.getRef().removeValue();
-                    String key = ds.getKey();
-                    Orders orders = new Orders(key, oder);
-                    items.add(orders);
-                }
-                recyclerViewAdapter.notifyDataSetChanged();
-                dialogFragment.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override

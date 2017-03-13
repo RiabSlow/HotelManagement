@@ -1,7 +1,9 @@
 package com.team.speedcoders.hotelmanagement.LogInActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.team.speedcoders.hotelmanagement.ItemList.ItemsLIst;
 import com.team.speedcoders.hotelmanagement.OrederListActivity.OrderList;
 import com.team.speedcoders.hotelmanagement.R;
@@ -37,17 +40,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if(savedInstanceState!=null)
+            return;
         initiateAll();
         firebaseAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
-            ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading", "");
+            ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading..", "");
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     progressDialog.dismiss();
-                    nextActivity(checkBox.isChecked());
+                    nextActivity(getSharedPreferences("USERINFO",Context.MODE_PRIVATE).getBoolean("manager",false));
                 } else progressDialog.dismiss();
             }
         };
@@ -99,7 +104,6 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         progressDialog.dismiss();
-                                        nextActivity(checkBox.isChecked());
                                     } else {
                                         progressDialog.dismiss();
                                         Toast.makeText(LoginActivity.this, "Error loging in", Toast.LENGTH_SHORT).show();
@@ -135,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkConstrains() {
+        SharedPreferences sharedPreferences=getSharedPreferences("USERINFO", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean("manager",checkBox.isChecked()).apply();
         userNames = this.userName.getText().toString();
         passwords = this.password.getText().toString();
 

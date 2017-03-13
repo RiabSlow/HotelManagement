@@ -29,5 +29,6 @@
     <string name="sign_in">Sign in</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="resister">Resister</string>
+    <string name="resister">Resister and Login</string>
+    <string name="user_name">User Name</string>
 </resources>

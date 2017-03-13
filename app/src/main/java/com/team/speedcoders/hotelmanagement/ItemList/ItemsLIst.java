@@ -1,6 +1,5 @@
 package com.team.speedcoders.hotelmanagement.ItemList;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.team.speedcoders.hotelmanagement.LogInActivity.LoginActivity;
 import com.team.speedcoders.hotelmanagement.R;
 
 import java.util.ArrayList;
@@ -29,14 +27,16 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
     DetailFragment detailFragment;
     FirebaseDatabase database;
     DatabaseReference reference;
-    String name, hotelName;
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener stateListener;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_list);
+        if (savedInstanceState != null)
+            return;
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle("Items");
@@ -48,19 +48,21 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
         recyclerViewAdapte.setListener(this);
         recyclerView.setAdapter(recyclerViewAdapte);
 
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("/orders/table");
-
-        auth=FirebaseAuth.getInstance();
-        stateListener=new FirebaseAuth.AuthStateListener() {
+        auth = FirebaseAuth.getInstance();
+        stateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser()==null) {
+                if (firebaseAuth.getCurrentUser() == null) {
                     finish();
                     Toast.makeText(ItemsLIst.this, "Successfully logged out", Toast.LENGTH_SHORT).show();
                 }
             }
         };
+
+        database = FirebaseDatabase.getInstance();
+        if (auth.getCurrentUser() != null)
+            name = auth.getCurrentUser().getDisplayName();
+        reference = database.getReference("orders/"+name);
 
         auth.addAuthStateListener(stateListener);
     }

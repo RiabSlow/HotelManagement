@@ -12,72 +12,86 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/startLine"
-        app:layout_constraintGuide_percent="0.08" />
+        app:layout_constraintGuide_percent="0.05" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/endLine"
-        app:layout_constraintGuide_percent="0.92" />
+        app:layout_constraintGuide_percent="0.95" />
+
+    <TextView
+        android:id="@+id/UserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/startLine"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25"/>
+
+    <EditText
+        android:id="@+id/UserNameField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="@id/UserName"
+        app:layout_constraintTop_toBottomOf="@id/UserName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/endLine" />
 
     <TextView
         android:id="@+id/userId"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/user_id"
-        app:layout_constraintLeft_toLeftOf="@+id/startLine"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="0dp"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintLeft_toLeftOf="@id/UserName"
+        app:layout_constraintTop_toBottomOf="@id/UserNameField" />
 
     <EditText
         android:id="@+id/userIdField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="text"
-        app:layout_constraintLeft_toLeftOf="@+id/userId"
-        app:layout_constraintTop_toBottomOf="@+id/userId"
-        app:layout_constraintRight_toRightOf="@+id/endLine"
-        android:layout_marginLeft="0dp" />
+        app:layout_constraintLeft_toLeftOf="@id/UserName"
+        app:layout_constraintTop_toBottomOf="@id/userId"
+        app:layout_constraintRight_toRightOf="@id/UserNameField" />
 
     <TextView
         android:id="@+id/userPW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/password"
-        app:layout_constraintLeft_toLeftOf="@+id/userIdField"
-        app:layout_constraintTop_toBottomOf="@+id/userIdField"
-        android:layout_marginTop="-1dp" />
+        app:layout_constraintLeft_toLeftOf="@id/UserName"
+        app:layout_constraintTop_toBottomOf="@id/userIdField" />
 
     <EditText
         android:id="@+id/userPWField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        app:layout_constraintLeft_toLeftOf="@+id/userPW"
-        app:layout_constraintTop_toBottomOf="@+id/userPW"
-        app:layout_constraintRight_toRightOf="@+id/endLine" />
+        app:layout_constraintLeft_toLeftOf="@id/userPW"
+        app:layout_constraintTop_toBottomOf="@id/userPW"
+        app:layout_constraintRight_toRightOf="@id/UserNameField" />
 
     <TextView
         android:id="@+id/userConfermPW"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/confirm_password"
-        app:layout_constraintLeft_toLeftOf="@+id/userPWField"
-        app:layout_constraintTop_toBottomOf="@+id/userPWField"
-        android:layout_marginTop="-1dp"/>
+        app:layout_constraintLeft_toLeftOf="@id/UserName"
+        app:layout_constraintTop_toBottomOf="@id/userPWField" />
 
     <EditText
         android:id="@+id/userConfertPWField"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        app:layout_constraintLeft_toLeftOf="@+id/userPW"
-        app:layout_constraintTop_toBottomOf="@+id/userConfermPW"
-        app:layout_constraintRight_toRightOf="@+id/endLine" />
+        app:layout_constraintLeft_toLeftOf="@id/userPW"
+        app:layout_constraintTop_toBottomOf="@id/userConfermPW"
+        app:layout_constraintRight_toRightOf="@id/UserNameField" />
 
     <Button
         android:layout_width="0dp"
@@ -85,11 +99,11 @@
         android:text="@string/resister"
         android:id="@+id/register"
         android:textAllCaps="false"
+        app:layout_constraintRight_toRightOf="@id/userPWField"
         app:layout_constraintLeft_toLeftOf="@id/startLine"
-        app:layout_constraintRight_toLeftOf="@+id/endLine"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/userConfertPWField"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/userConfertPWField" />
+        app:layout_constraintHorizontal_bias="0.0" />
 
     <TextView
         android:id="@+id/registerNowText"
@@ -100,20 +114,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_bias=".4"
-        app:layout_constraintTop_toBottomOf="@+id/register"/>
+        app:layout_constraintTop_toBottomOf="@+id/register"
+        app:layout_constraintLeft_toLeftOf="@+id/startLine"
+        app:layout_constraintRight_toLeftOf="@+id/endLine"
+        app:layout_constraintHorizontal_bias="0.4" />
 
     <TextView
         android:id="@+id/signIn"
         android:clickable="true"
         android:text="@string/sign_in"
         android:textColor="@android:color/holo_red_dark"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/register"
-        app:layout_constraintLeft_toRightOf="@+id/registerNowText"
-        android:layout_marginStart="3dp" />
+        app:layout_constraintLeft_toRightOf="@id/registerNowText"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>
