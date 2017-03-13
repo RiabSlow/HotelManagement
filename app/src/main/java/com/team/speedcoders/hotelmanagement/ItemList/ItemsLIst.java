@@ -83,10 +83,13 @@ public class ItemsLIst extends AppCompatActivity implements RecyclerViewHolder.O
                     dialog.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             reference.setValue(list);
+
                             for (int i = 0; i < foods.numberOfItems(); i++) {
                                 foods.getFoodAt(i).setQuantity(0);
                             }
+                            recyclerViewAdapte.notifyDataSetChanged();
                             Toast.makeText(ItemsLIst.this, "You will be served as quickly as possible", Toast.LENGTH_LONG).show();
                         }
                     }).setNegativeButton("Cancle", new DialogInterface.OnClickListener() {

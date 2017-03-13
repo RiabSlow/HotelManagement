@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.team.speedcoders.hotelmanagement.ItemList.ItemsLIst;
 import com.team.speedcoders.hotelmanagement.OrederListActivity.OrderList;
 import com.team.speedcoders.hotelmanagement.R;
@@ -32,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     CheckBox checkBox;
     TextView registerNow;
+    FirebaseAuth firebaseAuth;
+    FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,17 @@ public class LoginActivity extends AppCompatActivity {
         initiateAll();
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(MySharedPreference, Context.MODE_PRIVATE);
+        firebaseAuth=FirebaseAuth.getInstance();
+        authStateListener=new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=firebaseAuth.getCurrentUser();
+                if(user!=null)
+                    nextActivity(sharedPreferences.getBoolean(AsAuthor, false));
+
+            }
+        };
+
     }
 
     @Override
@@ -84,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.login:
-                        if (checkContrains())
+                        if (checkConstrains())
                             nextActivity(checkBox.isChecked());
                         break;
                     case R.id.registerNow:
@@ -108,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private boolean checkContrains() {
+    private boolean checkConstrains() {
         String hotelName = this.hotelName.getText().toString();
         String userName = this.userName.getText().toString();
         String password = this.password.getText().toString();

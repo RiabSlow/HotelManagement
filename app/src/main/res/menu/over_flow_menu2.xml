@@ -8,12 +8,5 @@
             android:title="@string/log_out"
             android:orderInCategory="100"
             />
-        <item
-            app:showAsAction="ifRoom"
-            android:id="@+id/order"
-            android:title="@string/order_now"
-            android:orderInCategory="101"
-            android:icon="@drawable/buypng"
-            />
     </group>
 </menu>

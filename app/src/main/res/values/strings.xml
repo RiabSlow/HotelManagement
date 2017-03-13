@@ -22,4 +22,12 @@
     <string name="add_to_order">Add to Cart</string>
     <string name="x">X</string>
     <string name="order_now">Order Now</string>
+    <string name="served">Served</string>
+    <string name="accepted">Accepted</string>
+    <string name="order_detail">Order detail</string>
+    <string name="table_no">Table No</string>
+    <string name="sign_in">Sign in</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="resister">Resister</string>
 </resources>
