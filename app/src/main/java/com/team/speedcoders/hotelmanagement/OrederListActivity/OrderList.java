@@ -2,6 +2,7 @@ package com.team.speedcoders.hotelmanagement.OrederListActivity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import com.team.speedcoders.hotelmanagement.ItemList.OrderedItem;
 import com.team.speedcoders.hotelmanagement.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.ClickInterFace {
 
@@ -30,7 +32,7 @@ public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.
     RecyclerViewAdapter recyclerViewAdapter;
     FirebaseDatabase database;
     DatabaseReference reference;
-    ArrayList<Orders> items ;
+    ArrayList<Orders> items;
     ChildEventListener childEventListener;
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener stateListener;
@@ -39,7 +41,7 @@ public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_list);
-        if(savedInstanceState!=null)
+        if (savedInstanceState != null)
             return;
         setSupportActionBar((Toolbar) findViewById(R.id.orderToolbar));
         if (getSupportActionBar() != null)
@@ -47,7 +49,7 @@ public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.
 
         recyclerView = ((RecyclerView) findViewById(R.id.orderRecyclerView));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        items= new ArrayList<>();
+        items = new ArrayList<>();
         recyclerViewAdapter = new RecyclerViewAdapter(OrderList.this, items);
         recyclerViewAdapter.setClickInterFace(this);
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -61,7 +63,8 @@ public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 ArrayList<OrderedItem> oder = new ArrayList<>();
-                GenericTypeIndicator<ArrayList<OrderedItem>> t = new GenericTypeIndicator<ArrayList<OrderedItem>>() {};
+                GenericTypeIndicator<ArrayList<OrderedItem>> t = new GenericTypeIndicator<ArrayList<OrderedItem>>() {
+                };
                 oder.addAll(dataSnapshot.getValue(t));
                 dataSnapshot.getRef().removeValue();
                 String key = dataSnapshot.getKey();
@@ -150,6 +153,14 @@ public class OrderList extends AppCompatActivity implements RecyclerViewAdapter.
 
     @Override
     public void onServed(int n) {
+        Orders orderedItem = items.get(n);
+        Calendar calendar= Calendar.getInstance();
+        String date=calendar.get(Calendar.YEAR)+""+(calendar.get(Calendar.MONTH)+1)+""+calendar.get(Calendar.DAY_OF_MONTH);
+        String time=calendar.get(Calendar.HOUR)+""+(calendar.get(Calendar.MINUTE));
+        ServedOrder servedOrder=new ServedOrder(orderedItem,calendar.get(Calendar.HOUR)+":"+(calendar.get(Calendar.MINUTE))
+        +":"+calendar.get(Calendar.SECOND));
+        DatabaseReference reference =FirebaseDatabase.getInstance().getReference("served/"+date+"/"+time);
+        reference.setValue(servedOrder);
         items.remove(n);
         recyclerViewAdapter.notifyItemRemoved(n);
     }

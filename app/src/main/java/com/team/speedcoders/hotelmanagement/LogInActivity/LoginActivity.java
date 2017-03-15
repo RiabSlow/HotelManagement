@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.team.speedcoders.hotelmanagement.ItemList.ItemsLIst;
 import com.team.speedcoders.hotelmanagement.OrederListActivity.OrderList;
 import com.team.speedcoders.hotelmanagement.R;
@@ -56,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
                 } else progressDialog.dismiss();
             }
         };
-        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
@@ -103,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        progressDialog.dismiss();
+                                        firebaseAuth.addAuthStateListener(authStateListener);
                                     } else {
                                         progressDialog.dismiss();
                                         Toast.makeText(LoginActivity.this, "Error loging in", Toast.LENGTH_SHORT).show();
