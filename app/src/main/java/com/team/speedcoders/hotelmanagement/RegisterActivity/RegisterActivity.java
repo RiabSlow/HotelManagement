@@ -58,10 +58,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 setDisplayName(userNames).build();
                         firebaseUser.updateProfile(upc);
                         firebaseAuth.signOut();
+                    } else {
                         progressDialog.dismiss();
                         finish();
-                    } else
-                        progressDialog.dismiss();
+                    }
                 }
             }
         };

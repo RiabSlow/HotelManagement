@@ -1,7 +1,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="350dp"
     android:layout_height="wrap_content"
     tools:context="com.team.speedcoders.hotelmanagement.ItemList.DetailFragment">
 
@@ -10,8 +10,8 @@
         android:id="@+id/detailFoodImage"
         android:src="@drawable/rsz_american_chosuye"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
+        android:layout_height="250dp"
+        android:scaleType="center"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:contentDescription="@string/hotel_item" />

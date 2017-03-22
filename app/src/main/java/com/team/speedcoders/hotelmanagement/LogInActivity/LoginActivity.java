@@ -44,10 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         initiateAll();
         firebaseAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
-            ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading..", "");
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading..", "");
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     progressDialog.dismiss();
@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        firebaseAuth.addAuthStateListener(authStateListener);
     }
 
     @Override
@@ -93,6 +94,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.login:
+                        SharedPreferences sharedPreferences=getSharedPreferences("USERINFO", Context.MODE_PRIVATE);
+                        sharedPreferences.edit().putBoolean("manager",checkBox.isChecked()).apply();
                         final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading please wait", "");
                         if (checkConstrains()) {
                             progressDialog.setCancelable(false);
@@ -101,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        firebaseAuth.addAuthStateListener(authStateListener);
+                                        progressDialog.dismiss();
                                     } else {
                                         progressDialog.dismiss();
                                         Toast.makeText(LoginActivity.this, "Error loging in", Toast.LENGTH_SHORT).show();
@@ -137,8 +140,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkConstrains() {
-        SharedPreferences sharedPreferences=getSharedPreferences("USERINFO", Context.MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean("manager",checkBox.isChecked()).apply();
         userNames = this.userName.getText().toString();
         passwords = this.password.getText().toString();
 
